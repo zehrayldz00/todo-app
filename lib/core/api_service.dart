@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
 
-import 'model/task.dart';
+import 'model/task.dart';*/
 
 class ApiService {
-  late String _baseUrl;
+  /*late String _baseUrl;
 
   final ApiService _instance = ApiService._privateConstructor();
   ApiService._privateConstructor() {
@@ -34,6 +34,5 @@ class ApiService {
       default:
         return Future.error(jsonResponse);
     }
-  }
+  }*/
 }
-*/
