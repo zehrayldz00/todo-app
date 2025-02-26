@@ -13,6 +13,7 @@ class ApiService {
     return _instance;
   }
 
+//burada verilen hatayı çözemedim
   /*Future<List<Task>> getTasks() async {
     final response = await http.get(Uri.parse("$_baseUrl/task.json"));
 
