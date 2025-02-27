@@ -1,6 +1,7 @@
 class Task {
   String? taskName;
   String? taskDetail;
+  String? key;
 
   Task({this.taskName, this.taskDetail});
 
@@ -18,11 +19,13 @@ class Task {
 
 }
 class TaskList{
-  List<Task> task = [];
+  List<Task> tasks = [];
 
   TaskList.fromJsonList(Map value){
     value.forEach((key,value){
-
+      var task = Task.fromJson(value);
+      task.key= key;
+      tasks.add(task);
     });
   }
 }

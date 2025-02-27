@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../styles/text_styles.dart';
+
+
 class CustomCard extends StatelessWidget {
   const CustomCard({super.key, required this.title, required this.subtitle});
 
@@ -11,8 +14,8 @@ class CustomCard extends StatelessWidget {
     return Card(
       elevation: 20,
       child: ListTile(
-        title: Text(this.title!),
-        subtitle: Text(this.subtitle!),
+        title: Text(title!, style: titleStyle,),
+        subtitle: Text(subtitle!, style: detailStyle,),
       ),
     );
   }
