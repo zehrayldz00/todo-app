@@ -13,12 +13,12 @@ class ApiService {
   ApiService._privateConstructor() {
     _baseUrl = "https://rest-8692d-default-rtdb.firebaseio.com/";
   }
-  //eager ile sarmalamak ne demek
 
   static ApiService getInstance() {
     return _instance;
   }
 
+  //burada kaldım
   Future<List<Task>> getTasks() async {
     final response = await http.get(Uri.parse("$_baseUrl/task.json"));
 
