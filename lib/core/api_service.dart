@@ -35,4 +35,21 @@ class ApiService {
     Logger().e(jsonResponse);
     return Future.error(jsonResponse);
   }
+
+  Future<void> addTasks(Task task) async {
+    final jsonBody = task.toJson();
+    final response = await http.post(Uri.parse("$_baseUrl/task.json"), body: jsonBody);
+
+    final jsonResponse = json.decode(response.body);
+
+    switch (response.statusCode) {
+      case HttpStatus.ok:
+        return Future.value(true);
+      case HttpStatus.unauthorized:
+        Logger().e(jsonResponse);
+        break;
+    }
+    Logger().e(jsonResponse);
+    return Future.error(jsonResponse);
+  }
 }

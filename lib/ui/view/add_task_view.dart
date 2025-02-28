@@ -9,9 +9,11 @@ class AddTaskView extends StatefulWidget {
 
 class _AddTaskViewState extends State<AddTaskView> {
   GlobalKey<FormState> formKey = GlobalKey(debugLabel: "formKey");
+  TextEditingController controllerName = TextEditingController();
+  TextEditingController controllerDetail = TextEditingController();
 
-  String? validator(val){
-    if(val!.isEmpty){
+  String? validator(val) {
+    if (val!.isEmpty) {
       return "This area can't empty";
     }
     return null;
@@ -29,22 +31,27 @@ class _AddTaskViewState extends State<AddTaskView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextFormField(decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Task Name",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
+                TextFormField(
+                  controller: controllerName,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Task Name",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
                   validator: validator,
                 ),
-                SizedBox(height: 30,),
-                TextFormField(decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: "Task Detail",
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                SizedBox(
+                  height: 30,
                 ),
+                TextFormField(
+                  controller: controllerDetail,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: "Task Detail",
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                  ),
                   validator: validator,
                 ),
-
                 ElevatedButton.icon(
                   icon: Icon(Icons.send),
                   onPressed: () {},
@@ -54,7 +61,6 @@ class _AddTaskViewState extends State<AddTaskView> {
             ),
           ),
         ),
-
       ),
     );
   }
