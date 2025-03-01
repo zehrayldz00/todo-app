@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../core/api_service.dart';
+import '../../core/model/task.dart';
+
 class AddTaskView extends StatefulWidget {
   const AddTaskView({super.key});
 
@@ -54,7 +57,14 @@ class _AddTaskViewState extends State<AddTaskView> {
                 ),
                 ElevatedButton.icon(
                   icon: Icon(Icons.send),
-                  onPressed: () {},
+                  onPressed: () async{
+                    var model = Task(
+                        taskName : controllerName.text,
+                        taskDetail : controllerDetail.text
+                    );
+                    await ApiService.getInstance().addTasks(model);
+                    Navigator.pop(context);
+                  },
                   label: Text("Add"),
                 )
               ],

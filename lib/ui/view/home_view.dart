@@ -47,14 +47,31 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget get _listView => ListView.builder(
-        itemCount: taskList.length,
-        itemExtent: 140,
-        shrinkWrap: true,
-        itemBuilder: (context, index) => CustomCard(
-          title: taskList[index].taskName,
-          subtitle: taskList[index].taskDetail,
-        ),
-      );
+      itemCount: taskList.length,
+      itemExtent: 140,
+      shrinkWrap: true,
+      itemBuilder: (context, index) => dismiss(
+          CustomCard(
+            title: taskList[index].taskName,
+            subtitle: taskList[index].taskDetail,
+          ),
+          taskList[index].key));
+
+  Widget dismiss(Widget child, String? key) {
+    return Dismissible(
+      child: child,
+      key: UniqueKey(),
+      background: Container(
+        color: Colors.red,
+      ),
+      secondaryBackground: Center(
+        child: Text("hello"),
+      ),
+      onDismissed: (dismissDirection) async {
+        await service.removeTasks(key!);
+      },
+    );
+  }
 
   Widget get _fabButton => FloatingActionButton(
         onPressed: fabPressed,
@@ -78,6 +95,7 @@ class _HomeViewState extends State<HomeView> {
           ),
           ElevatedButton(
             onPressed: () {
+              Navigator.pop(context);
               Navigator.of(context)
                   .push(MaterialPageRoute(builder: (context) => AddTaskView()));
             },
