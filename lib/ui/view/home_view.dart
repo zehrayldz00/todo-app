@@ -5,6 +5,8 @@ import 'package:todo_application/ui/shared/styles/text_styles.dart';
 import 'package:todo_application/ui/shared/widgets/custom_card.dart';
 import 'package:todo_application/ui/view/add_task_view.dart';
 
+import '../shared/styles/colors.dart';
+
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
@@ -20,7 +22,7 @@ class _HomeViewState extends State<HomeView> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //backgroundColor: Color(0xff19579C),
+          backgroundColor: nightNavy,
           title: Text(
             "My Task Manager",
             style: titleStyle,
