@@ -17,35 +17,58 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   ApiService service = ApiService.getInstance();
   List<Task> taskList = [];
+  bool isClicked = false;
+  Color appBarColor = nightNavy;
+  Color background = darkNavy;
+  Color cardColor = nightNavy;
+  Image leadIcon = Image.asset('assets/images/moon.png');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: nightNavy,
-          title: Text(
-            "My Task Manager",
-            style: titleStyle,
-          ),
-        ),
-        floatingActionButton: _fabButton,
-        body: FutureBuilder<List<Task>>(
-            future: service.getTasks(),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  if (snapshot.hasData) {
-                    taskList = snapshot.data!;
-                    return _listView;
-                  }
-                  return Center(child: Text("ERROR"));
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            setState(() {
+              isClicked = !isClicked;
 
-                default:
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-              }
-            }));
+              appBarColor = isClicked ? sandy : nightNavy;
+              background = isClicked ? sunShine : darkNavy;
+              cardColor = isClicked ? sandy : nightNavy;
+
+              leadIcon = isClicked
+                  ? Image.asset('assets/images/sun.png')
+                  : Image.asset('assets/images/moon.png');
+            });
+          },
+          icon: leadIcon,
+        ),
+        backgroundColor: appBarColor,
+        title: Text(
+          "My Task Manager",
+          style: titleStyle,
+        ),
+      ),
+      floatingActionButton: _fabButton,
+      body: FutureBuilder<List<Task>>(
+          future: service.getTasks(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.done:
+                if (snapshot.hasData) {
+                  taskList = snapshot.data!;
+                  return _listView;
+                }
+                return Center(child: Text("ERROR"));
+
+              default:
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+            }
+          }),
+      backgroundColor: background,
+    );
   }
 
   Widget get _listView => ListView.builder(
@@ -56,6 +79,7 @@ class _HomeViewState extends State<HomeView> {
           CustomCard(
             title: taskList[index].taskName,
             subtitle: taskList[index].taskDetail,
+            cardColor: cardColor,
           ),
           taskList[index].key));
 
@@ -77,7 +101,10 @@ class _HomeViewState extends State<HomeView> {
 
   Widget get _fabButton => FloatingActionButton(
         onPressed: fabPressed,
-        child: Icon(Icons.add),
+        child: (Image.asset(
+          'assets/images/add.png',
+        )),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
       );
 
   void fabPressed() {
