@@ -108,28 +108,12 @@ class _HomeViewState extends State<HomeView> {
       );
 
   void fabPressed() {
-    showModalBottomSheet(context: context, builder: (context) => bottomSheet);
+    showModalBottomSheet(context: context, builder: (context) => AddTaskView());
   }
 
   Widget get bottomSheet => Container(
-        height: 100,
+        height: 200,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
-        child: Column(children: [
-          Divider(
-            thickness: 2,
-            indent: 100,
-            endIndent: 100,
-            color: Colors.grey,
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (context) => AddTaskView()));
-            },
-            child: Text("Add Product"),
-          )
-        ]),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(100))),
       );
 }

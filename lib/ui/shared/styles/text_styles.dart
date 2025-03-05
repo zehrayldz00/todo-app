@@ -7,5 +7,5 @@ final titleStyle =
 final detailStyle = TextStyle(
   fontSize: 15,
   fontFamily: "PixelifySans",
-    color: white
+  color: white,
 );
