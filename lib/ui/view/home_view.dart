@@ -15,40 +15,35 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  ApiService service = ApiService.getInstance();
+  final ApiService service = ApiService.getInstance();
   List<Task> taskList = [];
   bool isClicked = false;
-  Color appBarColor = nightNavy;
-  Color background = darkNavy;
-  Color cardColor = nightNavy;
-  Image leadIcon = Image.asset('assets/images/moon.png');
+
+  late Color appBarColor, background, cardColor;
+  late Image leadIcon;
+
+  @override
+  void initState() {
+    super.initState();
+    _setTheme(isClicked);
+  }
+
+  void _setTheme(bool isDarkMode) {
+    setState(() {
+      appBarColor = isDarkMode ? sandy : nightNavy;
+      background = isDarkMode ? sunShine : darkNavy;
+      cardColor = isDarkMode ? sandy : nightNavy;
+
+      leadIcon = isDarkMode
+          ? Image.asset('assets/images/sun.png')
+          : Image.asset('assets/images/moon.png');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            setState(() {
-              isClicked = !isClicked;
-
-              appBarColor = isClicked ? sandy : nightNavy;
-              background = isClicked ? sunShine : darkNavy;
-              cardColor = isClicked ? sandy : nightNavy;
-
-              leadIcon = isClicked
-                  ? Image.asset('assets/images/sun.png')
-                  : Image.asset('assets/images/moon.png');
-            });
-          },
-          icon: leadIcon,
-        ),
-        backgroundColor: appBarColor,
-        title: Text(
-          "My Task Manager",
-          style: titleStyle,
-        ),
-      ),
+      appBar: _buildAppBar(),
       floatingActionButton: _fabButton,
       body: FutureBuilder<List<Task>>(
           future: service.getTasks(),
@@ -71,49 +66,68 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
+  AppBar _buildAppBar() {
+    return AppBar(
+      leading: IconButton(
+        onPressed: () {
+          isClicked = !isClicked;
+          _setTheme(isClicked);
+        },
+        icon: leadIcon,
+      ),
+      backgroundColor: appBarColor,
+      title: Text(
+        "My Task Manager",
+        style: titleStyle,
+      ),
+    );
+  }
+
   Widget get _listView => ListView.builder(
       itemCount: taskList.length,
       itemExtent: 140,
       shrinkWrap: true,
-      itemBuilder: (context, index) => dismiss(
-          CustomCard(
-            title: taskList[index].taskName,
-            subtitle: taskList[index].taskDetail,
-            cardColor: cardColor,
-          ),
-          taskList[index].key));
+      itemBuilder: (context, index) => _dismissibleCard(taskList[index]));
 
-  Widget dismiss(Widget child, String? key) {
+  Widget _dismissibleCard(Task task) {
     return Dismissible(
-      child: child,
+      child: CustomCard(
+          title: task.taskDetail,
+          subtitle: task.taskDetail,
+          cardColor: cardColor),
       key: UniqueKey(),
-      background: Container(
-        color: Colors.red,
-      ),
-      secondaryBackground: Center(
-        child: Text("hello"),
-      ),
-      onDismissed: (dismissDirection) async {
-        await service.removeTasks(key!);
+      background: Container(color: Colors.red),
+      onDismissed: (direction) async {
+        await service.removeTasks(task.key!);
       },
     );
   }
 
   Widget get _fabButton => FloatingActionButton(
-        onPressed: fabPressed,
+        onPressed: _showBottomSheet,
         child: (Image.asset(
           'assets/images/add.png',
         )),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(100)),
       );
 
-  void fabPressed() {
-    showModalBottomSheet(context: context, builder: (context) => AddTaskView());
+  void _showBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, //klavyenin açılmasını düzgün hale getirir.
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
+      clipBehavior: Clip.antiAlias,
+      builder: (context) => Padding(
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        height: MediaQuery.of(context).size.height*0.6,
+        padding: const EdgeInsets.all(16),
+        color: cardColor,
+        child: const AddTaskView(),
+      ) ,
+      ),
+    );
   }
-
-  Widget get bottomSheet => Container(
-        height: 200,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(100))),
-      );
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/api_service.dart';
 import '../../core/model/task.dart';
+import '../shared/styles/colors.dart';
 
 class AddTaskView extends StatefulWidget {
   const AddTaskView({super.key});
@@ -11,12 +12,12 @@ class AddTaskView extends StatefulWidget {
 }
 
 class _AddTaskViewState extends State<AddTaskView> {
-  GlobalKey<FormState> formKey = GlobalKey(debugLabel: "formKey");
-  TextEditingController controllerName = TextEditingController();
-  TextEditingController controllerDetail = TextEditingController();
+  final GlobalKey<FormState> formKey = GlobalKey(debugLabel: "formKey");
+  final TextEditingController controllerName = TextEditingController();
+  final TextEditingController controllerDetail = TextEditingController();
 
-  String? validator(val) {
-    if (val!.isEmpty) {
+  String? validator(String? val) {
+    if (val==null || val.isEmpty) {
       return "This area can't empty";
     }
     return null;
@@ -24,8 +25,9 @@ class _AddTaskViewState extends State<AddTaskView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Form(
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Form(
         key: formKey,
         autovalidateMode: AutovalidateMode.onUserInteraction,
         child: Center(
@@ -34,37 +36,13 @@ class _AddTaskViewState extends State<AddTaskView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextFormField(
-                  controller: controllerName,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Task Name",
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  validator: validator,
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                TextFormField(
-                  controller: controllerDetail,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: "Task Detail",
-                    floatingLabelBehavior: FloatingLabelBehavior.always,
-                  ),
-                  validator: validator,
-                ),
+                _textField(controllerName, "Task Name"),
+                SizedBox(height: 20,),
+                _textField(controllerDetail, "Task Detail"),
+                SizedBox(height: 20,),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.send),
-                  onPressed: () async{
-                    var model = Task(
-                        taskName : controllerName.text,
-                        taskDetail : controllerDetail.text
-                    );
-                    await ApiService.getInstance().addTasks(model);
-                    Navigator.pop(context);
-                  },
+                  icon: Icon(Icons.add),
+                  onPressed: _addTask,
                   label: Text("Add"),
                 )
               ],
@@ -74,4 +52,27 @@ class _AddTaskViewState extends State<AddTaskView> {
       ),
     );
   }
+
+  TextFormField _textField(TextEditingController controller, String label) {
+    return TextFormField(
+                controller: controller,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: label,
+                  floatingLabelStyle: TextStyle(color: white),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                validator: validator,
+              );
+  }
+  void _addTask() async{
+    if(formKey.currentState!.validate()){
+      var model = Task(
+      taskName: controllerName.text,
+     taskDetail: controllerDetail.text,
+      );
+      await ApiService.getInstance().addTasks(model);
+      Navigator.pop(context);
+  }
+}
 }
