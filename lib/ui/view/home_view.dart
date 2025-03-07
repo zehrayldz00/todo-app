@@ -26,6 +26,7 @@ class _HomeViewState extends State<HomeView> {
   void initState() {
     super.initState();
     _setTheme(isClicked);
+    _loadTasks();
   }
 
   void _setTheme(bool isDarkMode) {
@@ -40,28 +41,26 @@ class _HomeViewState extends State<HomeView> {
     });
   }
 
+  void _loadTasks() async {
+    List<Task> tasks = await service.getTasks();
+    setState(() {
+      taskList = tasks;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _buildAppBar(),
       floatingActionButton: _fabButton,
-      body: FutureBuilder<List<Task>>(
-          future: service.getTasks(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.done:
-                if (snapshot.hasData) {
-                  taskList = snapshot.data!;
-                  return _listView;
-                }
-                return Center(child: Text("ERROR"));
-
-              default:
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-            }
-          }),
+      body: taskList.isEmpty
+          ? Center(
+              child: Text(
+                "No tasks available",
+                style: titleStyle,
+              ),
+            )
+          : _listView,
       backgroundColor: background,
     );
   }
@@ -90,16 +89,35 @@ class _HomeViewState extends State<HomeView> {
       itemBuilder: (context, index) => _dismissibleCard(taskList[index]));
 
   Widget _dismissibleCard(Task task) {
-    return Dismissible(
-      child: CustomCard(
-          title: task.taskDetail,
-          subtitle: task.taskDetail,
-          cardColor: cardColor),
-      key: UniqueKey(),
-      background: Container(color: Colors.red),
-      onDismissed: (direction) async {
-        await service.removeTasks(task.key!);
-      },
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Dismissible(
+        key: UniqueKey(),
+        background: Container(
+          alignment: Alignment.centerRight,
+          margin: EdgeInsets.only(bottom: 20, top: 10),
+          padding: EdgeInsets.only(right: 20),
+          color: Colors.red,
+          child: Icon(
+            Icons.delete,
+            color: white,
+            size: 30,
+          ),
+        ),
+        child: Container(
+          height: 100,
+          child: CustomCard(
+              title: task.taskDetail,
+              subtitle: task.taskDetail,
+              cardColor: cardColor),
+        ),
+        onDismissed: (direction) async {
+          await service.removeTasks(task.key!);
+          setState(() {
+            taskList.remove(task);
+          });
+        },
+      ),
     );
   }
 
@@ -119,14 +137,14 @@ class _HomeViewState extends State<HomeView> {
           borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       clipBehavior: Clip.antiAlias,
       builder: (context) => Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Container(
-        height: MediaQuery.of(context).size.height*0.6,
-        padding: const EdgeInsets.all(16),
-        color: cardColor,
-        child: const AddTaskView(),
-      ) ,
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.6,
+          padding: const EdgeInsets.all(16),
+          color: cardColor,
+          child: AddTaskView(onTaskAdded: _loadTasks),
+        ),
       ),
     );
   }

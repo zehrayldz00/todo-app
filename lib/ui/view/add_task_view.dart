@@ -5,7 +5,10 @@ import '../../core/model/task.dart';
 import '../shared/styles/colors.dart';
 
 class AddTaskView extends StatefulWidget {
-  const AddTaskView({super.key});
+
+  final VoidCallback onTaskAdded;
+
+  const AddTaskView({super.key, required this.onTaskAdded});
 
   @override
   State<AddTaskView> createState() => _AddTaskViewState();
@@ -68,11 +71,14 @@ class _AddTaskViewState extends State<AddTaskView> {
   void _addTask() async{
     if(formKey.currentState!.validate()){
       var model = Task(
-      taskName: controllerName.text,
-     taskDetail: controllerDetail.text,
+        taskName: controllerName.text,
+        taskDetail: controllerDetail.text,
       );
       await ApiService.getInstance().addTasks(model);
+
+      widget.onTaskAdded();
       Navigator.pop(context);
-  }
+    }
+
 }
 }
