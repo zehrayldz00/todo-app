@@ -84,37 +84,29 @@ class _HomeViewState extends State<HomeView> {
 
   Widget get _listView => ListView.builder(
       itemCount: taskList.length,
-      itemExtent: 140,
-      shrinkWrap: true,
       itemBuilder: (context, index) => _dismissibleCard(taskList[index]));
 
   Widget _dismissibleCard(Task task) {
-    return SizedBox(
-      height: 100,
-      child: Dismissible(
-        key: UniqueKey(),
-        background: Container(
-          alignment: Alignment.centerRight,
-          color: Colors.red,
-          child: Icon(
-            Icons.delete,
-            color: white,
-          ),
+    return Dismissible(
+      key: UniqueKey(),
+      background: Container(
+        alignment: Alignment.centerRight,
+        color: Colors.red,
+        child: Icon(
+          Icons.delete,
+          color: white,
         ),
-        child: SizedBox(
-          height: 150,
-          child: CustomCard(
-              title: task.taskDetail,
-              subtitle: task.taskDetail,
-              cardColor: cardColor),
-        ),
-        onDismissed: (direction) async {
-          await service.removeTasks(task.key!);
-          setState(() {
-            taskList.remove(task);
-          });
-        },
       ),
+      child: CustomCard(
+          title: task.taskDetail,
+          subtitle: task.taskDetail,
+          cardColor: cardColor),
+      onDismissed: (direction) async {
+        await service.removeTasks(task.key!);
+        setState(() {
+          taskList.remove(task);
+        });
+      },
     );
   }
 

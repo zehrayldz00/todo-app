@@ -26,6 +26,7 @@ class _CustomCardState extends State<CustomCard> {
     return Card(
       color: widget.cardColor,
       elevation: 20,
+      margin: EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
       child: ListTile(
         leading: Checkbox(
             checkColor: widget.cardColor,
@@ -37,6 +38,7 @@ class _CustomCardState extends State<CustomCard> {
                 isChecked = value!;
               });
             }),
+        trailing: IconButton(onPressed: (){}, icon: Icon(Icons.edit, color: white,)),
         title: Text(widget.title!,
             style: titleStyle.copyWith(
                 decoration: isChecked ? TextDecoration.lineThrough : null,
