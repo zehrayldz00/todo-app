@@ -62,6 +62,7 @@ class _AddTaskViewState extends State<AddTaskView> {
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: label,
+                  labelStyle: TextStyle(color: white, fontFamily:"PixelifySans" ),
                   floatingLabelStyle: TextStyle(color: white),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
