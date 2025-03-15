@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:todo_application/core/api_service.dart';
 import 'package:todo_application/core/model/task.dart';
 import 'package:todo_application/ui/shared/styles/text_styles.dart';
@@ -98,9 +99,16 @@ class _HomeViewState extends State<HomeView> {
         ),
       ),
       child: CustomCard(
-          title: task.taskDetail,
+          title: task.taskName,
           subtitle: task.taskDetail,
-          cardColor: cardColor),
+          complete: task.isCompleted ?? false,
+          cardColor: cardColor,
+        onCheckboxChanged: (bool value) async{
+            task.isCompleted = value;
+            await service.updateTask(task);
+            setState(() {});
+        },
+      ),
       onDismissed: (direction) async {
         await service.removeTasks(task.key!);
         setState(() {
@@ -121,7 +129,7 @@ class _HomeViewState extends State<HomeView> {
   void _showBottomSheet() {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, //klavyenin açılmasını düzgün hale getirir.
+      isScrollControlled: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(30))),
       clipBehavior: Clip.antiAlias,

@@ -54,10 +54,28 @@ class ApiService {
 
   Future<void> removeTasks(String key) async {
     final response = await http.delete(Uri.parse("$_baseUrl/task/$key.json"));
-
     final jsonResponse = json.decode(response.body);
 
     switch (response.statusCode) {
+      case HttpStatus.ok:
+        return Future.value(true);
+      case HttpStatus.unauthorized:
+        Logger().e(jsonResponse);
+        break;
+    }
+    Logger().e(jsonResponse);
+    return Future.error(jsonResponse);
+  }
+
+  Future<void> updateTask(Task task) async{
+    final jsonBody = json.encode(task.toJson());
+    final response = await http.put(
+      Uri.parse("$_baseUrl/task/${task.key}.json"),
+      body: jsonBody
+    );
+    final jsonResponse = json.decode(response.body);
+
+    switch (response.statusCode){
       case HttpStatus.ok:
         return Future.value(true);
       case HttpStatus.unauthorized:

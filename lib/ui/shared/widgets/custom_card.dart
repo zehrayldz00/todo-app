@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 import 'package:todo_application/ui/shared/styles/colors.dart';
 
@@ -8,18 +10,22 @@ class CustomCard extends StatefulWidget {
       {super.key,
       required this.title,
       required this.subtitle,
-      required this.cardColor});
+      required this.complete,
+      required this.cardColor,
+      required this.onCheckboxChanged
+      });
 
   final String? title;
   final String? subtitle;
+  late bool complete;
   final Color? cardColor;
+  final Function(bool) onCheckboxChanged;
 
   @override
   State<CustomCard> createState() => _CustomCardState();
 }
 
 class _CustomCardState extends State<CustomCard> {
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -32,21 +38,23 @@ class _CustomCardState extends State<CustomCard> {
             checkColor: widget.cardColor,
             activeColor: white,
             side: BorderSide(color: white),
-            value: isChecked,
+            value: widget.complete,
             onChanged: (bool? value) {
               setState(() {
-                isChecked = value!;
+                widget.complete = value!;
               });
+              widget.onCheckboxChanged(value!);
             }),
         trailing: IconButton(onPressed: (){}, icon: Icon(Icons.edit, color: white,)),
         title: Text(widget.title!,
             style: titleStyle.copyWith(
-                decoration: isChecked ? TextDecoration.lineThrough : null,
+                decoration:
+                widget.complete ? TextDecoration.lineThrough : null,
                 decorationColor: widget.cardColor)),
         subtitle: Text(
           widget.subtitle!,
           style: detailStyle.copyWith(
-              decoration: isChecked ? TextDecoration.lineThrough : null,
+              decoration: widget.complete ? TextDecoration.lineThrough : null,
               decorationColor: widget.cardColor),
         ),
       ),

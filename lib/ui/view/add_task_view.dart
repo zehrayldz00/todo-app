@@ -74,6 +74,7 @@ class _AddTaskViewState extends State<AddTaskView> {
       var model = Task(
         taskName: controllerName.text,
         taskDetail: controllerDetail.text,
+        isCompleted: false
       );
       await ApiService.getInstance().addTasks(model);
 
