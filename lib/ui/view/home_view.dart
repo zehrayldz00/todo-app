@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todo_application/core/api_service.dart';
@@ -26,11 +27,20 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    _setTheme(isClicked);
+    _loadThemePreference();
     _loadTasks();
   }
 
-  void _setTheme(bool isDarkMode) {
+  void _loadThemePreference() async {
+    final themePreference = await service.getThemePreference();
+
+    if (themePreference != null){
+      bool isDarkMode = themePreference['isDarkMode'] ?? false;
+      _setTheme(isDarkMode);
+    }
+  }
+
+  void _setTheme(bool isDarkMode) async{
     setState(() {
       appBarColor = isDarkMode ? sandy : nightNavy;
       background = isDarkMode ? sunShine : darkNavy;
@@ -40,6 +50,7 @@ class _HomeViewState extends State<HomeView> {
           ? Image.asset('assets/images/sun.png')
           : Image.asset('assets/images/moon.png');
     });
+    await service.saveThemePreference(isDarkMode);
   }
 
   void _loadTasks() async {

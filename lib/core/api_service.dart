@@ -18,6 +18,12 @@ class ApiService {
     return _instance;
   }
 
+  Future <Map<String, dynamic>?> getThemePreference() async{
+    final response = await http.get(Uri.parse('$_baseUrl/theme.json'));
+    final jsonResponse = json.decode(response.body);
+    return jsonResponse;
+  }
+
   Future<List<Task>> getTasks() async {
     final response = await http.get(Uri.parse("$_baseUrl/task.json"));
 
@@ -84,5 +90,16 @@ class ApiService {
     }
     Logger().e(jsonResponse);
     return Future.error(jsonResponse);
+  }
+
+  Future <void> saveThemePreference(bool isDarkMode) async {
+    final jsonBody = json.encode({'isDarkMode' : isDarkMode});
+    final response = await http.put(Uri.parse('$_baseUrl/theme.json'),
+      body: jsonBody,
+    );
+
+    final jsonResponse = json.decode(response.body);
+    return jsonResponse;
+
   }
 }
