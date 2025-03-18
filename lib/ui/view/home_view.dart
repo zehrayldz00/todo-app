@@ -24,14 +24,16 @@ class _HomeViewState extends State<HomeView> {
   late Color appBarColor, background, cardColor;
   late Image leadIcon;
 
+  Future <void>? _themeFuture;
+
   @override
   void initState() {
     super.initState();
-    _loadThemePreference();
+    _themeFuture = _loadThemePreference();
     _loadTasks();
   }
 
-  void _loadThemePreference() async {
+  Future <void> _loadThemePreference() async {
     final themePreference = await service.getThemePreference();
 
     if (themePreference != null){
@@ -62,18 +64,37 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: _buildAppBar(),
-      floatingActionButton: _fabButton,
-      body: taskList.isEmpty
-          ? Center(
-              child: Text(
-                "No tasks available",
-                style: titleStyle,
+    return FutureBuilder(
+        future: _themeFuture,
+        builder: (context, snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting){
+            return Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              )
+            );
+          }else if(snapshot.hasError){
+            return Scaffold(
+              body: Center(
+                child: Text("Error loading theme"),
               ),
-            )
-          : _listView,
-      backgroundColor: background,
+            );
+          } else{
+            return Scaffold(
+              appBar: _buildAppBar(),
+              floatingActionButton: _fabButton,
+              body: taskList.isEmpty
+                  ? Center(
+                child: Text(
+                  "No tasks available",
+                  style: titleStyle,
+                ),
+              )
+                  : _listView,
+              backgroundColor: background,
+            );
+          }
+        }
     );
   }
 
@@ -84,7 +105,7 @@ class _HomeViewState extends State<HomeView> {
           isClicked = !isClicked;
           _setTheme(isClicked);
         },
-        icon: leadIcon,
+        icon: leadIcon ,
       ),
       backgroundColor: appBarColor,
       title: Text(
