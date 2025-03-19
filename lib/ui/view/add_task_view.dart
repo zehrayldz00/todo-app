@@ -7,8 +7,10 @@ import '../shared/styles/colors.dart';
 class AddTaskView extends StatefulWidget {
 
   final VoidCallback onTaskAdded;
+  final Task? task;
+  final bool isEditing;
 
-  const AddTaskView({super.key, required this.onTaskAdded});
+  const AddTaskView({super.key, required this.onTaskAdded, this.task, this.isEditing=false});
 
   @override
   State<AddTaskView> createState() => _AddTaskViewState();
@@ -18,6 +20,15 @@ class _AddTaskViewState extends State<AddTaskView> {
   final GlobalKey<FormState> formKey = GlobalKey(debugLabel: "formKey");
   final TextEditingController controllerName = TextEditingController();
   final TextEditingController controllerDetail = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.isEditing && widget.task != null){
+      controllerName.text = widget.task!.taskName!;
+      controllerDetail.text = widget.task!.taskDetail!;
+    }
+  }
 
   String? validator(String? val) {
     if (val==null || val.isEmpty) {
@@ -44,9 +55,9 @@ class _AddTaskViewState extends State<AddTaskView> {
                 _textField(controllerDetail, "Task Detail"),
                 SizedBox(height: 20,),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.add),
-                  onPressed: _addTask,
-                  label: Text("Add"),
+                  icon: Icon(Icons.save),
+                  onPressed: _saveTask,
+                  label: Text(widget.isEditing ? "Save" : "Add"),
                 )
               ],
             ),
@@ -69,15 +80,22 @@ class _AddTaskViewState extends State<AddTaskView> {
                 validator: validator,
               );
   }
-  void _addTask() async{
+  void _saveTask() async{
     if(formKey.currentState!.validate()){
-      var model = Task(
-        taskName: controllerName.text,
-        taskDetail: controllerDetail.text,
-        isCompleted: false
-      );
-      await ApiService.getInstance().addTasks(model);
+      if(widget.isEditing && widget.task != null){
+        widget.task!.taskName = controllerName.text;
+        widget.task!.taskDetail = controllerDetail.text;
 
+        await ApiService.getInstance().updateTask(widget.task!);
+      }
+      else{
+        var model = Task(
+            taskName: controllerName.text,
+            taskDetail: controllerDetail.text,
+            isCompleted: false
+        );
+        await ApiService.getInstance().addTasks(model);
+      }
       widget.onTaskAdded();
       Navigator.pop(context);
     }

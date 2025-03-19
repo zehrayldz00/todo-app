@@ -140,6 +140,7 @@ class _HomeViewState extends State<HomeView> {
             await service.updateTask(task);
             setState(() {});
         },
+        onEditPressed: () => _showEditBottomSheet(task),
       ),
       onDismissed: (direction) async {
         await service.removeTasks(task.key!);
@@ -175,6 +176,30 @@ class _HomeViewState extends State<HomeView> {
           child: AddTaskView(onTaskAdded: _loadTasks),
         ),
       ),
+    );
+  }
+
+  void _showEditBottomSheet(Task task){
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(30))
+        ),
+        clipBehavior: Clip.antiAlias,
+        builder: (context) => Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Container(
+            height: MediaQuery.of(context).size.height*0.6,
+            padding: const EdgeInsets.all(16),
+            color: cardColor,
+            child: AddTaskView(
+                onTaskAdded: _loadTasks,
+              task : task,
+              isEditing : true
+            ),
+          ),
+        )
     );
   }
 }
