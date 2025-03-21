@@ -115,9 +115,12 @@ class _HomeViewState extends State<HomeView> {
     );
   }
 
-  Widget get _listView => ListView.builder(
-      itemCount: taskList.length,
-      itemBuilder: (context, index) => _dismissibleCard(taskList[index]));
+  Widget get _listView => Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: ListView.builder(
+        itemCount: taskList.length,
+        itemBuilder: (context, index) => _dismissibleCard(taskList[index])),
+  );
 
   Widget _dismissibleCard(Task task) {
     return Dismissible(

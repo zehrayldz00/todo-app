@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:todo_application/ui/shared/styles/colors.dart';
 
 import '../../core/api_service.dart';
 import '../../core/model/task.dart';
-import '../shared/styles/colors.dart';
+import '../shared/styles/text_styles.dart';
 
 class AddTaskView extends StatefulWidget {
 
@@ -55,9 +56,9 @@ class _AddTaskViewState extends State<AddTaskView> {
                 _textField(controllerDetail, "Task Detail"),
                 SizedBox(height: 20,),
                 ElevatedButton.icon(
-                  icon: Icon(Icons.save),
+                  icon: Icon(Icons.save, color: sandy,),
                   onPressed: _saveTask,
-                  label: Text(widget.isEditing ? "Save" : "Add"),
+                  label: Text(widget.isEditing ? "Save" : "Add", style: detailStyle.copyWith(fontSize: 20, color: sandy),),
                 )
               ],
             ),
@@ -70,11 +71,15 @@ class _AddTaskViewState extends State<AddTaskView> {
   TextFormField _textField(TextEditingController controller, String label) {
     return TextFormField(
                 controller: controller,
+                style: detailStyle.copyWith(fontSize: 20),
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: white)),
+                  focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: orange, width: 2)),
+                  errorStyle: detailStyle.copyWith( color: error),
                   labelText: label,
-                  labelStyle: TextStyle(color: white, fontFamily:"PixelifySans" ),
-                  floatingLabelStyle: TextStyle(color: white),
+                  labelStyle: detailStyle,
+                  floatingLabelStyle: detailStyle.copyWith(fontSize: 20),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
                 validator: validator,
