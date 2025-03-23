@@ -1,7 +1,13 @@
+//import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_application/ui/view/home_view.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(/*DevicePreview(
+    enabled: true,
+    tools: [
+      ...DevicePreview.defaultTools,
+    ],
+    builder: (context) =>*/ MyApp());
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
